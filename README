@@ -1,0 +1,27 @@
+CSCI 551 — Assignment 4 (submission layout)
+
+Directories
+- hello_cuda/          CUDA hello + deviceQuery (cscigpu)
+- cuda-integrators/    cuda_trap1 + trap_seq (cscigpu)
+- functiongen/         timeinterp CSV, ex4.h table
+- compare/             MPI example (ex4.h LUT integration pattern)
+- train_ex4/           Exercise 4 train simulation (MPI + numerical Euler); build on ECC
+
+Quick commands
+
+cscigpu (CUDA_PATH=/usr/local/cuda-12.9 typical):
+  cd hello_cuda && make && ./cuda_hello 64 && ./cuda_hello1 8 128 && ./deviceQuery
+  cd ../cuda-integrators && make CUDA_PATH=/usr/local/cuda-12.9
+  ./trap_seq 1000000 0 3.14159265358979323846 && ./cuda_trap1 1000000
+  cd ../functiongen && make timeinterp && ./timeinterp 10 | tail -n +5 > Ex4-Acceleration-interp-10Hz.csv
+
+ECC cluster (MPI for train_ex4):
+  cd train_ex4 && make
+  mpirun -np 1 ./train_ex4 --dt 0.001
+  mpirun -np 1 ./train_ex4 --dt 0.0001
+  mpirun -np 2 ./train_ex4 --dt 0.0001
+  mpirun -np 4 ./train_ex4 --dt 0.0001
+  mpirun -np 8 ./train_ex4 --dt 0.0001
+  mpirun -np 16 ./train_ex4 --dt 0.0001
+
+Submit: separate written report (PDF) plus ZIP of code, Makefiles, sample logs — per Canvas instructions.
