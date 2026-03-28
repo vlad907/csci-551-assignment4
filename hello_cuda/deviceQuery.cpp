@@ -31,11 +31,22 @@
 // std::system includes
 
 #include <cuda_runtime.h>
-#include <helper_cuda.h>
+#include <cstdio>
 
 #include <iostream>
 #include <memory>
 #include <string>
+
+#define checkCudaErrors(val)                                    \
+   do {                                                         \
+      cudaError_t _check_err = (val);                           \
+      if (_check_err != cudaSuccess) {                          \
+         fprintf(stderr, "CUDA error %s at %s:%d\n",          \
+                 cudaGetErrorString(_check_err), __FILE__,      \
+                 __LINE__);                                     \
+         exit(EXIT_FAILURE);                                    \
+      }                                                         \
+   } while (0)
 
 int *pArgc = NULL;
 char **pArgv = NULL;

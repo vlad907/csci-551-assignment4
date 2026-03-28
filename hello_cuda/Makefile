@@ -57,12 +57,17 @@ endif
 # Flags to detect either a Linux system (linux) or Mac OSX (darwin)
 DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 
-# Location of the CUDA Toolkit binaries and libraries on cscigpu
-CUDA_PATH       ?= /usr
-CUDA_INC_PATH   ?= /usr/include
-CUDA_SAMP_PATH	?= /home/sbsiewert/cuda-samples-a100/Common
+# CUDA toolkit layout (full install under /usr/local/cuda-*) — override if needed:
+#   make CUDA_PATH=/usr/local/cuda
+CUDA_PATH       ?= /usr/local/cuda-12.9
+CUDA_INC_PATH   ?= $(CUDA_PATH)/include
 CUDA_BIN_PATH   ?= $(CUDA_PATH)/bin
-CUDA_LIB_PATH   ?= $(CUDA_PATH)/lib/nvidia-cuda-toolkit
+CUDA_LIB_PATH   ?= $(CUDA_PATH)/lib64
+
+# Legacy split-package layout (Debian nvidia-cuda-toolkit); uncomment if you use it:
+# CUDA_PATH       ?= /usr
+# CUDA_INC_PATH   ?= /usr/include
+# CUDA_LIB_PATH   ?= /usr/lib/x86_64-linux-gnu
 
 # Location of the CUDA Toolkit binaries and libraries on Jetson Nano 2g
 #CUDA_PATH       ?= /usr/local/cuda-11.4
@@ -93,7 +98,7 @@ endif
 
 
 # Common includes and paths for CUDA
-INCLUDES      := -I$(CUDA_INC_PATH) -I. -I.. -I../../common/inc -I$(CUDA_SAMP_PATH)
+INCLUDES      := -I$(CUDA_INC_PATH) -I. -I..
 
 # Target rules
 all: build
