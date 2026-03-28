@@ -74,6 +74,31 @@ inline void getCudaAttribute(T *attribute, CUdevice_attribute device_attribute,
 
 #endif /* CUDART_VERSION < 5000 */
 
+/* CUDA cores per SM (from NVIDIA helper_cuda.h logic; avoids samples include). */
+static int _ConvertSMVer2Cores(int major, int minor) {
+  typedef struct {
+    int SM;
+    int Cores;
+  } sSMtoCores;
+
+  static const sSMtoCores nGpuArchCoresPerSM[] = {
+      {0x30, 192}, {0x32, 192}, {0x35, 192}, {0x37, 192}, {0x50, 128},
+      {0x52, 128}, {0x53, 128}, {0x60, 64},  {0x61, 128}, {0x62, 128},
+      {0x70, 64},  {0x72, 64},  {0x75, 64},  {0x80, 64},  {0x86, 128},
+      {0x87, 128}, {0x89, 128}, {0x90, 128}, {-1, -1}};
+
+  int sm_ver = (major << 4) + minor;
+  for (int i = 0; nGpuArchCoresPerSM[i].SM != -1; i++) {
+    if (nGpuArchCoresPerSM[i].SM == sm_ver) {
+      return nGpuArchCoresPerSM[i].Cores;
+    }
+  }
+  printf(
+      "MapSMtoCores for SM %d.%d is undefined. Default to 64 cores/SM.\n",
+      major, minor);
+  return 64;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
 ////////////////////////////////////////////////////////////////////////////////

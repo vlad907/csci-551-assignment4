@@ -80,8 +80,8 @@ CUDA_LIB_PATH   ?= $(CUDA_PATH)/lib64
 NVCC            ?= $(CUDA_BIN_PATH)/nvcc
 GCC             ?= g++
 
-# Extra user flags
-EXTRA_NVCCFLAGS ?=
+# Extra user flags (suppress old-arch offline-compile deprecation noise on new nvcc)
+EXTRA_NVCCFLAGS ?= -Wno-deprecated-gpu-targets
 EXTRA_LDFLAGS   ?=
 
 LDFLAGS		:= -L$(CUDA_LIB_PATH) -lcudart
